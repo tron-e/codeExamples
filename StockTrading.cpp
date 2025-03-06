@@ -8,7 +8,6 @@ best simulate real world trading with multiple stock brockers.
 To solve this we decided to use a linkedlist to organize the orders and from there created the addOrder and matchOrder functions. To keep
 the matchOrder at o(n) we used 2 pointers to search through the linkedlist. 
 
-The code is written in C++ as it has best effice
 */
 
 //create the order class to store orders as objects 
@@ -70,7 +69,7 @@ class orderBook{
                     sell = head; // make sure to start from beginning of the linkedlist to ensure all orders are being checked
                     while(sell != nullptr){ //keep checking for sell conditons thru entire list
                         //check to see if we have  match
-                        if(sell->orderType = 's' && !strncmp(buy->ticker, sell->ticker) && buy->price >= sell->price){
+                        if(sell->orderType == 's' && !strncmp(buy->ticker, sell->ticker) && buy->price >= sell->price){
                             //case 1: buy and sell quantities are the same so both can be removed
                             if(buy->quantity == sell->quantity){
                                 removeOrder(buy);
