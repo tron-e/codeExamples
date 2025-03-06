@@ -1,11 +1,13 @@
 /*
-for this stock trading scenario we have to create an addOrder function and a matchOrder function given a few constraints. These contrains 
-include no imports or external libararies or defined data strucutres like maps or dictionaries. We also have to make matchOrder a o(n) 
-time complexity function. The addOrder fucntion must have given parameters of order type(buy or sell), stock ticker, quantity, and price. 
-We also are told to use a lock-free data strucutre and try to handle race conditions where multiple threads modify stock order book to 
-best simulate real world trading with multiple stock brockers.
+For this stock trading scenario we have to create an addOrder function and a matchOrder function given a few constraints. These 
+constraints include no imports or external libraries or defined data structures like maps or dictionaries. We also have to make matchOrder 
+a o(n) time complexity function. The addOrder function must have given parameters of order type(buy or sell), stock ticker, quantity, 
+and price. 
 
-To solve this we decided to use a linkedlist to organize the orders and from there created the addOrder and matchOrder functions. To keep
+We also are told to use a lock-free data structure and try to handle race conditions where multiple threads modify stock order book to 
+best simulate real world trading with multiple stock brokers.
+
+To solve this we decided to use a linked list to organize the orders and from there created the addOrder and matchOrder functions. To keep
 the matchOrder at o(n) we used 2 pointers to search through the linkedlist. 
 
 */
@@ -13,7 +15,7 @@ the matchOrder at o(n) we used 2 pointers to search through the linkedlist.
 //create the order class to store orders as objects 
 class order{
     public:
-        char orderType; // b = buy, s = sell. stored as single char for memory efficieny
+        char orderType; // b = buy, s = sell. stored as single char for memory efficiency
         char ticker[6]; // stock ticker can be up to 5 characters depending on exhange and we include a spot for null termination
         double quantity; // how many shares, double because some stocks can be sold or purchased as fractional shares
         double price; //price of stock
@@ -22,10 +24,10 @@ class order{
         order* next;
         order* prev;
 
-        //intializer for objexts
+        //initializer for objects
         order(char orderType, const char* ticker, double quantity, double price) 
             : orderType(orderType), quantity(quantity), price(price), next(nullptr), prev(nullptr){
-                //to ensure that garabage value do not mess up ticker comparisons later
+                //to ensure that garbage value do not mess up ticker comparisons later
                 int i = 0;
                 while(i < 5 && ticker[i] != '\0'){ // copies up to 5 char as long as not null
                     this->ticker[i] = ticker[i];
@@ -43,7 +45,7 @@ class orderBook{
     public:
         orderBook() : head(nullptr), tail(nullptr) {}
 
-        // add order fucntion adds the order as an object into a linkedlist 
+        // add order function adds the order as an object into a linked list 
         void addOrder(char orderType, const char* ticker, double quantity, double price){
             //creates the order as node for linkedList with necessary info
             order* newOrder = new order(orderType, ticker, quantity, price);
@@ -67,7 +69,7 @@ class orderBook{
             while(buy != nullptr){  //start at front of linkedlist and go until we reach end (nullptr)
                 if (buy->orderType == 'b'){  //once we see a buy type we start to check for matches
                     sell = head; // make sure to start from beginning of the linkedlist to ensure all orders are being checked
-                    while(sell != nullptr){ //keep checking for sell conditons thru entire list
+                    while(sell != nullptr){ //keep checking for sell conditions thru entire list
                         //check to see if we have  match
                         if(sell->orderType == 's' && !strncmp(buy->ticker, sell->ticker) && buy->price >= sell->price){
                             //case 1: buy and sell quantities are the same so both can be removed
@@ -78,7 +80,7 @@ class orderBook{
                             } else if(buy->quantity > sell -> quantity){
                                 buy->quantity -= sell->quantity;
                                 removeOrder(sell);
-                            //case 3 we have more sell availble
+                            //case 3 we have more sell available
                             }else{
                                 sell->quantity -= buy->quantity;
                                 removeOrder(buy);
@@ -109,7 +111,7 @@ class orderBook{
             return 0;
         }
 
-        //helper function to remove orders from the linkelist whilst mainting the structre properly
+        //helper function to remove orders from the linkedlist whilst maintaining the structure properly
         void removeOrder(order* order){
             if(!order){
                 return;
